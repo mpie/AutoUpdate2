@@ -291,7 +291,7 @@ class main:
             except: pass
         return False
 
-    def unzipAndMove(_in, _out , src):
+    def unzipAndMove(self, _in, _out , src):
         try:
             zin = zipfile.ZipFile(_in, 'r')
             zin.extractall(_out)
