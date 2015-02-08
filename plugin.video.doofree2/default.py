@@ -275,9 +275,9 @@ class main:
                 if os.path.isfile(UpdateLocalFile):
                     extractFolder = xbmc.translatePath('special://home/addons')
                     pluginsrc =  xbmc.translatePath(os.path.join(extractFolder, UpdateDirName))
+                    self.cleanCache()
                     if self.unzipAndMove(UpdateLocalFile, extractFolder, pluginsrc):
                         self.saveUpdateFile(UpdateVerPath, str(gitver))
-                        self.cleanCache()
                         print "DooFree auto update - update install successful ("+str(gitver)+")"
                         xbmc.executebuiltin("XBMC.Notification(DooFree Update,Successful,5000,"+logo+")")
                         xbmc.executebuiltin("XBMC.Container.Refresh")
