@@ -9,6 +9,8 @@ import urllib,urllib2,re,os,threading,datetime,time,base64,xbmc,xbmcplugin,xbmcg
 from operator import itemgetter
 import commonsources
 
+addon_id = 'plugin.video.doofree2'
+selfAddon = xbmcaddon.Addon(id=addon_id)
 UpdatePath=os.path.join(xbmc.translatePath(selfAddon.getAddonInfo('profile')),'Update')
 try: os.makedirs(UpdatePath)
 except: pass
@@ -46,7 +48,7 @@ addonCache          = os.path.join(dataPath,'cache.db')
 #latestMovies        = 'https://ipv6.icefilms.info/movies/release/hd'
 latestMovies        = 'http://ipv6.icefilms.info/movies/added/hd'
 #latestMovies        = 'http://www.imdb.com/search/title?year=2014,2015&title_type=feature'
-logo                = xbmc.translatePath('special://home/addons/plugin.video.doofree/icon.png')
+logo                = xbmc.translatePath('special://home/addons/plugin.video.doofree2/icon.png')
 
 class main:
     def __init__(self):
@@ -218,70 +220,70 @@ class main:
         elif action == 'play_tvhost':                 resolver().play_host('episode', name, imdb, tvdb, url, source, provider)
 
     def CheckForAutoUpdate(self, force = False):
-    GitHubRepo    = 'AutoUpdate2'
-    GitHubUser    = 'mpie'
-    GitHubBranch  = 'master'
-    GitHubPath    = 'tree/master/plugin.video.doofree'
-    UpdateVerFile = 'update'
-    RunningFile   = 'running'
-    verCheck=True #main.CheckVersion()#Checks If Plugin Version is up to date
-    if verCheck == True:
-        try:
-            print "DooFree auto update - started"
-            html=OPENURL('https://github.com/'+GitHubUser+'/'+GitHubRepo+'?files=1', mobile=True, verbose=False)
-        except: html=''
-        m = re.search("View (\d+) commit",html,re.I)
-        if m: gitver = int(m.group(1))
-        else: gitver = 0
-        UpdateVerPath = os.path.join(UpdatePath,UpdateVerFile)
-        try: locver = int(self.getUpdateFile(UpdateVerPath))
-        except: locver = 0
-        RunningFilePath = os.path.join(UpdatePath, RunningFile)
-        if locver < gitver and (not os.path.exists(RunningFilePath) or os.stat(RunningFilePath).st_mtime + 120 < time.time()) or force:
-            UpdateUrl = 'https://github.com/'+GitHubUser+'/'+GitHubRepo+'/archive/'+GitHubBranch+'.zip'
-            UpdateLocalName = GitHubRepo+'.zip'
-            UpdateDirName   = GitHubRepo+'-'+GitHubBranch
-            UpdateLocalFile = xbmc.translatePath(os.path.join(UpdatePath, UpdateLocalName))
-            setFile(RunningFilePath,'')
-            print "auto update - new update available ("+str(gitver)+")"
-            xbmc.executebuiltin("XBMC.Notification(DooFree Update,New Update detected,3000,"+logo+")")
-            xbmc.executebuiltin("XBMC.Notification(DooFree Update,Updating...,3000,"+logo+")")
-            try:os.remove(UpdateLocalFile)
-            except:pass
-            try: urllib.urlretrieve(UpdateUrl,UpdateLocalFile)
-            except:pass
-            if os.path.isfile(UpdateLocalFile):
-                extractFolder = xbmc.translatePath('special://home/addons')
-                pluginsrc =  xbmc.translatePath(os.path.join(extractFolder,UpdateDirName))
-                if unzipAndMove(UpdateLocalFile,extractFolder,pluginsrc):
-                    saveUpdateFile(UpdateVerPath,str(gitver))
-                    print "DooFree auto update - update install successful ("+str(gitver)+")"
-                    xbmc.executebuiltin("XBMC.Notification(DooFree Update,Successful,5000,"+logo+")")
-                    xbmc.executebuiltin("XBMC.Container.Refresh")
+        GitHubRepo    = 'AutoUpdate2'
+        GitHubUser    = 'mpie'
+        GitHubBranch  = 'master'
+        GitHubPath    = 'tree/master/plugin.video.doofree2'
+        UpdateVerFile = 'update'
+        RunningFile   = 'running'
+        verCheck=True #main.CheckVersion()#Checks If Plugin Version is up to date
+        if verCheck == True:
+            try:
+                print "DooFree auto update - started"
+                html=OPENURL('https://github.com/'+GitHubUser+'/'+GitHubRepo+'?files=1', mobile=True, verbose=False)
+            except: html=''
+            m = re.search("View (\d+) commit",html,re.I)
+            if m: gitver = int(m.group(1))
+            else: gitver = 0
+            UpdateVerPath = os.path.join(UpdatePath,UpdateVerFile)
+            try: locver = int(self.getUpdateFile(UpdateVerPath))
+            except: locver = 0
+            RunningFilePath = os.path.join(UpdatePath, RunningFile)
+            if locver < gitver and (not os.path.exists(RunningFilePath) or os.stat(RunningFilePath).st_mtime + 120 < time.time()) or force:
+                UpdateUrl = 'https://github.com/'+GitHubUser+'/'+GitHubRepo+'/archive/'+GitHubBranch+'.zip'
+                UpdateLocalName = GitHubRepo+'.zip'
+                UpdateDirName   = GitHubRepo+'-'+GitHubBranch
+                UpdateLocalFile = xbmc.translatePath(os.path.join(UpdatePath, UpdateLocalName))
+                setFile(RunningFilePath,'')
+                print "auto update - new update available ("+str(gitver)+")"
+                xbmc.executebuiltin("XBMC.Notification(DooFree Update,New Update detected,3000,"+logo+")")
+                xbmc.executebuiltin("XBMC.Notification(DooFree Update,Updating...,3000,"+logo+")")
+                try:os.remove(UpdateLocalFile)
+                except:pass
+                try: urllib.urlretrieve(UpdateUrl,UpdateLocalFile)
+                except:pass
+                if os.path.isfile(UpdateLocalFile):
+                    extractFolder = xbmc.translatePath('special://home/addons')
+                    pluginsrc =  xbmc.translatePath(os.path.join(extractFolder,UpdateDirName))
+                    if unzipAndMove(UpdateLocalFile,extractFolder,pluginsrc):
+                        saveUpdateFile(UpdateVerPath,str(gitver))
+                        print "DooFree auto update - update install successful ("+str(gitver)+")"
+                        xbmc.executebuiltin("XBMC.Notification(DooFree Update,Successful,5000,"+logo+")")
+                        xbmc.executebuiltin("XBMC.Container.Refresh")
+                    else:
+                        print "DooFree auto update - update install failed ("+str(gitver)+")"
+                        xbmc.executebuiltin("XBMC.Notification(DooFree Update,Failed,3000,"+logo+")")
                 else:
-                    print "DooFree auto update - update install failed ("+str(gitver)+")"
+                    print "DooFree auto update - cannot find downloaded update ("+str(gitver)+")"
                     xbmc.executebuiltin("XBMC.Notification(DooFree Update,Failed,3000,"+logo+")")
+                try:os.remove(RunningFilePath)
+                except:pass
             else:
-                print "DooFree auto update - cannot find downloaded update ("+str(gitver)+")"
-                xbmc.executebuiltin("XBMC.Notification(DooFree Update,Failed,3000,"+logo+")")
-            try:os.remove(RunningFilePath)
-            except:pass
-        else:
-            if force: xbmc.executebuiltin("XBMC.Notification(DooFree Update,DooFree is up-to-date,3000,"+logo+")")
-            print "DooFree auto update - DooFree is up-to-date ("+str(locver)+")"
-        return
+                if force: xbmc.executebuiltin("XBMC.Notification(DooFree Update,DooFree is up-to-date,3000,"+logo+")")
+                print "DooFree auto update - DooFree is up-to-date ("+str(locver)+")"
+            return
 
     def unzipAndMove(_in, _out , src):
-    try:
-        zin = zipfile.ZipFile(_in, 'r')
-        zin.extractall(_out)
-        if src:
-            moveFiles(src, _out)
-            shutil.rmtree(src)
-    except Exception, e:
-        print str(e)
-        return False
-    return True
+        try:
+            zin = zipfile.ZipFile(_in, 'r')
+            zin.extractall(_out)
+            if src:
+                moveFiles(src, _out)
+                shutil.rmtree(src)
+        except Exception, e:
+            print str(e)
+            return False
+        return True
 
     def moveFiles(self, root_src_dir, root_dst_dir):
         for src_dir, dirs, files in os.walk(root_src_dir):
