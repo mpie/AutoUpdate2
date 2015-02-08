@@ -262,9 +262,9 @@ class main:
 
                 if os.path.isfile(UpdateLocalFile):
                     extractFolder = xbmc.translatePath('special://home/addons')
-                    pluginsrc =  xbmc.translatePath(os.path.join(extractFolder,UpdateDirName))
-                    if unzipAndMove(UpdateLocalFile,extractFolder,pluginsrc):
-                        saveUpdateFile(UpdateVerPath,str(gitver))
+                    pluginsrc =  xbmc.translatePath(os.path.join(extractFolder, UpdateDirName))
+                    if self.unzipAndMove(UpdateLocalFile, extractFolder, pluginsrc):
+                        self.saveUpdateFile(UpdateVerPath, str(gitver))
                         print "DooFree auto update - update install successful ("+str(gitver)+")"
                         xbmc.executebuiltin("XBMC.Notification(DooFree Update,Successful,5000,"+logo+")")
                         xbmc.executebuiltin("XBMC.Container.Refresh")
@@ -325,7 +325,7 @@ class main:
 
     def saveUpdateFile(self, path, value):
         try:
-            open(path,'w+').write(value)
+            open(path, 'w+').write(value)
         except: pass
 
 class getUrl(object):
