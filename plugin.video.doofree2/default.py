@@ -11,7 +11,7 @@ import commonsources
 
 addon_id = 'plugin.video.doofree2'
 selfAddon = xbmcaddon.Addon(id=addon_id)
-UpdatePath=os.path.join(xbmc.translatePath(selfAddon.getAddonInfo('profile')),'Update')
+UpdatePath=os.path.join(xbmc.translatePath(selfAddon.getAddonInfo('profile')), 'Update')
 try: os.makedirs(UpdatePath)
 except: pass
 try:
@@ -232,28 +232,34 @@ class main:
         if verCheck == True:
             try:
                 print "DooFree auto update - started"
-                html=OPENURL('https://github.com/'+GitHubUser+'/'+GitHubRepo+'?files=1', mobile=True, verbose=False)
+                html = getUrl('https://github.com/'+GitHubUser+'/'+GitHubRepo+'?files=1', mobile=True).result
             except: html=''
-            m = re.search("View (\d+) commit",html,re.I)
+
+            m = re.search("View (\d+) commit", html, re.I)
             if m: gitver = int(m.group(1))
             else: gitver = 0
+
             UpdateVerPath = os.path.join(UpdatePath,UpdateVerFile)
             try: locver = int(self.getUpdateFile(UpdateVerPath))
             except: locver = 0
+
             RunningFilePath = os.path.join(UpdatePath, RunningFile)
             if locver < gitver and (not os.path.exists(RunningFilePath) or os.stat(RunningFilePath).st_mtime + 120 < time.time()) or force:
                 UpdateUrl = 'https://github.com/'+GitHubUser+'/'+GitHubRepo+'/archive/'+GitHubBranch+'.zip'
                 UpdateLocalName = GitHubRepo+'.zip'
                 UpdateDirName   = GitHubRepo+'-'+GitHubBranch
                 UpdateLocalFile = xbmc.translatePath(os.path.join(UpdatePath, UpdateLocalName))
-                setFile(RunningFilePath,'')
+                self.setFile(RunningFilePath,'')
                 print "auto update - new update available ("+str(gitver)+")"
                 xbmc.executebuiltin("XBMC.Notification(DooFree Update,New Update detected,3000,"+logo+")")
                 xbmc.executebuiltin("XBMC.Notification(DooFree Update,Updating...,3000,"+logo+")")
+
                 try:os.remove(UpdateLocalFile)
                 except:pass
+
                 try: urllib.urlretrieve(UpdateUrl,UpdateLocalFile)
                 except:pass
+
                 if os.path.isfile(UpdateLocalFile):
                     extractFolder = xbmc.translatePath('special://home/addons')
                     pluginsrc =  xbmc.translatePath(os.path.join(extractFolder,UpdateDirName))
@@ -274,6 +280,16 @@ class main:
                 if force: xbmc.executebuiltin("XBMC.Notification(DooFree Update,DooFree is up-to-date,3000,"+logo+")")
                 print "DooFree auto update - DooFree is up-to-date ("+str(locver)+")"
             return
+
+    def setFile(self, path, content, force=False):
+        if os.path.exists(path) and not force:
+            return False
+        else:
+            try:
+                open(path, 'w+').write(content)
+                return True
+            except: pass
+        return False
 
     def unzipAndMove(_in, _out , src):
         try:
