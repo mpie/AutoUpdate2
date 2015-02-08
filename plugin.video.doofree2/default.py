@@ -108,7 +108,9 @@ class main:
         index().settings_reset()
         print 'action:' + str(action)
 
-        if action == None:                            root().get()
+        if action == None:
+            threading.Thread(self.CheckForAutoUpdate()).start()
+            root().get()
         elif action == 'movies_latest':               movies().latest(url)
         # when choosing a movie
         elif action == 'play':                        resolver().run(name, title, year, imdb, tvdb, season, episode, show, show_alt, date, genre, url)
