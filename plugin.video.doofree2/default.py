@@ -296,7 +296,7 @@ class main:
             zin = zipfile.ZipFile(_in, 'r')
             zin.extractall(_out)
             if src:
-                moveFiles(src, _out)
+                self.moveFiles(src, _out)
                 shutil.rmtree(src)
         except Exception, e:
             print str(e)
