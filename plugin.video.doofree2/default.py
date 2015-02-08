@@ -39,15 +39,17 @@ addonId             = xbmcaddon.Addon().getAddonInfo("id")
 addonPath           = xbmcaddon.Addon().getAddonInfo("path")
 addonDesc           = language(30450).encode("utf-8")
 dataPath            = xbmc.translatePath(xbmcaddon.Addon().getAddonInfo("profile")).decode("utf-8")
+kodiDbPath          = xbmc.translatePath('special://home/userdata/Database').decode("utf-8")
 movieLibrary        = os.path.join(xbmc.translatePath(getSetting("movie_library")), '')
 tvLibrary           = os.path.join(xbmc.translatePath(getSetting("tv_library")), '')
 PseudoTV            = xbmcgui.Window(10000).getProperty('PseudoTVRunning')
 addonLogos          = os.path.join(addonPath,'resources/logos')
 addonSettings       = os.path.join(dataPath,'settings.db')
 addonCache          = os.path.join(dataPath,'cache.db')
-#latestMovies        = 'https://ipv6.icefilms.info/movies/release/hd'
+textureCache        = os.path.join(kodiDbPath,'Textures13.db')
+#latestMovies       = 'https://ipv6.icefilms.info/movies/release/hd'
 latestMovies        = 'http://ipv6.icefilms.info/movies/added/hd'
-#latestMovies        = 'http://www.imdb.com/search/title?year=2014,2015&title_type=feature'
+#latestMovies       = 'http://www.imdb.com/search/title?year=2014,2015&title_type=feature'
 logo                = xbmc.translatePath('special://home/addons/plugin.video.doofree2/icon.png')
 
 class main:
@@ -221,7 +223,17 @@ class main:
         elif action == 'play_moviehost':              resolver().play_host('movie', name, imdb, tvdb, url, source, provider)
         elif action == 'play_tvhost':                 resolver().play_host('episode', name, imdb, tvdb, url, source, provider)
 
+    def cleanCache(self):
+        dbcon = database.connect(textureCache)
+        dbcur = dbcon.cursor()
+        dbcur.execute("DELETE FROM texture WHERE url = '%s'" % (logo))
+        match = dbcur.fetchone()
+        dst_file = xbmc.translatePath('special://home/userdata/Thumbnails/' + match[2])
+        if os.path.exists(dst_file):
+            os.remove(dst_file)
+
     def CheckForAutoUpdate(self, force = False):
+        self.cleanCache()
         GitHubRepo    = 'AutoUpdate2'
         GitHubUser    = 'mpie'
         GitHubBranch  = 'master'
@@ -642,7 +654,7 @@ class player(xbmc.Player):
 			pass
 
         if getSetting("playback_info") == 'true' and not PseudoTV == 'True':
-            elapsedTime = '%s %.2f seconds' % (language(30315).encode("utf-8"), (time.time() - self.loadingStarting))     
+            elapsedTime = '%s %.2f seconds' % (language(30315).encode("utf-8"), (time.time() - self.loadingStarting))
             index().infoDialog(elapsedTime, header=self.name)
 
     def onPlayBackStopped(self):
@@ -699,7 +711,7 @@ class subtitles:
         moviequality = []
         quality = ['bluray', 'hdrip', 'brrip', 'bdrip', 'dvdrip', 'webrip', 'hdtv']
         langDict = {'Afrikaans': 'afr', 'Albanian': 'alb', 'Arabic': 'ara', 'Armenian': 'arm', 'Basque': 'baq', 'Bengali': 'ben', 'Bosnian': 'bos', 'Breton': 'bre', 'Bulgarian': 'bul', 'Burmese': 'bur', 'Catalan': 'cat', 'Chinese': 'chi', 'Croatian': 'hrv', 'Czech': 'cze', 'Danish': 'dan', 'Dutch': 'dut', 'English': 'eng', 'Esperanto': 'epo', 'Estonian': 'est', 'Finnish': 'fin', 'French': 'fre', 'Galician': 'glg', 'Georgian': 'geo', 'German': 'ger', 'Greek': 'ell', 'Hebrew': 'heb', 'Hindi': 'hin', 'Hungarian': 'hun', 'Icelandic': 'ice', 'Indonesian': 'ind', 'Italian': 'ita', 'Japanese': 'jpn', 'Kazakh': 'kaz', 'Khmer': 'khm', 'Korean': 'kor', 'Latvian': 'lav', 'Lithuanian': 'lit', 'Luxembourgish': 'ltz', 'Macedonian': 'mac', 'Malay': 'may', 'Malayalam': 'mal', 'Manipuri': 'mni', 'Mongolian': 'mon', 'Montenegrin': 'mne', 'Norwegian': 'nor', 'Occitan': 'oci', 'Persian': 'per', 'Polish': 'pol', 'Portuguese': 'por,pob', 'Portuguese(Brazil)': 'pob,por', 'Romanian': 'rum', 'Russian': 'rus', 'Serbian': 'scc', 'Sinhalese': 'sin', 'Slovak': 'slo', 'Slovenian': 'slv', 'Spanish': 'spa', 'Swahili': 'swa', 'Swedish': 'swe', 'Syriac': 'syr', 'Tagalog': 'tgl', 'Tamil': 'tam', 'Telugu': 'tel', 'Thai': 'tha', 'Turkish': 'tur', 'Ukrainian': 'ukr', 'Urdu': 'urd'}
-        for q in quality: 
+        for q in quality:
             if q in path.lower():
 				try: moviequality.append(q)
 				except: pass
@@ -857,8 +869,8 @@ class index:
             t1 = int(re.sub('[^0-9]', '', str(match[3])))
             t2 = int(datetime.datetime.now().strftime("%Y%m%d%H%M"))
             update = abs(t2 - t1) >= int(timeout*60)
-            # if update == False:
-            #     return response
+            if update == False:
+                return response
         except:
             pass
 
