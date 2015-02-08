@@ -226,14 +226,14 @@ class main:
     def cleanCache(self):
         dbcon = database.connect(textureCache)
         dbcur = dbcon.cursor()
-        dbcur.execute("DELETE FROM texture WHERE url = '%s'" % (logo))
+        dbcur.execute("SELECT * FROM texture WHERE url = '%s'" % (logo))
         match = dbcur.fetchone()
         dst_file = xbmc.translatePath('special://home/userdata/Thumbnails/' + match[2])
         if os.path.exists(dst_file):
             os.remove(dst_file)
+        dbcur.execute("DELETE FROM texture WHERE url = '%s'" % (logo))
 
     def CheckForAutoUpdate(self, force = False):
-        self.cleanCache()
         GitHubRepo    = 'AutoUpdate2'
         GitHubUser    = 'mpie'
         GitHubBranch  = 'master'
@@ -277,6 +277,7 @@ class main:
                     pluginsrc =  xbmc.translatePath(os.path.join(extractFolder, UpdateDirName))
                     if self.unzipAndMove(UpdateLocalFile, extractFolder, pluginsrc):
                         self.saveUpdateFile(UpdateVerPath, str(gitver))
+                        self.cleanCache()
                         print "DooFree auto update - update install successful ("+str(gitver)+")"
                         xbmc.executebuiltin("XBMC.Notification(DooFree Update,Successful,5000,"+logo+")")
                         xbmc.executebuiltin("XBMC.Container.Refresh")
