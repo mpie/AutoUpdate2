@@ -5,7 +5,7 @@
     Copyright (C) 2015 Mpie
 '''
 
-import urllib,urllib2,re,os,threading,datetime,time,base64,xbmc,xbmcplugin,xbmcgui,xbmcaddon,xbmcvfs
+import urllib,urllib2,re,os,threading,datetime,time,base64,zipfile,xbmc,xbmcplugin,xbmcgui,xbmcaddon,xbmcvfs
 from operator import itemgetter
 import commonsources
 
