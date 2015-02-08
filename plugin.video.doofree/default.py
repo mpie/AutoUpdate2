@@ -9,7 +9,7 @@ import urllib,urllib2,re,os,shutil,threading,datetime,time,base64,zipfile,xbmc,x
 from operator import itemgetter
 import commonsources
 
-addon_id = 'plugin.video.doofree2'
+addon_id = 'plugin.video.doofree'
 selfAddon = xbmcaddon.Addon(id=addon_id)
 UpdatePath=os.path.join(xbmc.translatePath(selfAddon.getAddonInfo('profile')), 'Update')
 try: os.makedirs(UpdatePath)
@@ -50,7 +50,7 @@ textureCache        = os.path.join(kodiDbPath,'Textures13.db')
 #latestMovies       = 'https://ipv6.icefilms.info/movies/release/hd'
 latestMovies        = 'http://ipv6.icefilms.info/movies/added/hd'
 #latestMovies       = 'http://www.imdb.com/search/title?year=2014,2015&title_type=feature'
-logo                = xbmc.translatePath('special://home/addons/plugin.video.doofree2/icon.png')
+logo                = xbmc.translatePath('special://home/addons/plugin.video.doofree/icon.png')
 
 class main:
     def __init__(self):
@@ -233,13 +233,13 @@ class main:
             os.remove(dst_file)
 
     def CheckForAutoUpdate(self, force = False):
-        GitHubRepo    = 'AutoUpdate2'
+        GitHubRepo    = 'AutoUpdate'
         GitHubUser    = 'mpie'
         GitHubBranch  = 'master'
-        GitHubPath    = 'tree/master/plugin.video.doofree2'
+        GitHubPath    = 'tree/master/plugin.video.doofree'
         UpdateVerFile = 'update'
         RunningFile   = 'running'
-        verCheck=True #main.CheckVersion()#Checks If Plugin Version is up to date
+        verCheck=True
         if verCheck == True:
             try:
                 print "DooFree auto update - started"
@@ -869,8 +869,8 @@ class index:
             t1 = int(re.sub('[^0-9]', '', str(match[3])))
             t2 = int(datetime.datetime.now().strftime("%Y%m%d%H%M"))
             update = abs(t2 - t1) >= int(timeout*60)
-            if update == False:
-                return response
+            #if update == False:
+                #return response
         except:
             pass
 
@@ -5768,8 +5768,19 @@ class resolver:
             return
 
     def sources_filter(self):
-        hd_rank = ['YIFY', 'GVideo', 'Muchmovies', 'Billionuploads', '180upload', 'Movreel', 'Hugefiles', 'Sweflix', 'Videomega', 'Niter', 'Einthusan', 'VK', 'V-vids', 'Vidbull', 'Filecloud', 'Uploadrocket', 'Kingfiles']
+        #hd_rank = ['Hugefiles', 'YIFY', 'Muchmovies', 'Billionuploads', '180upload', 'Movreel', 'GVideo', 'Sweflix', 'Videomega', 'Niter', 'Einthusan', 'VK', 'V-vids', 'Vidbull', 'Filecloud', 'Uploadrocket', 'Kingfiles']
         #hd_rank += [getSetting("hosthd1"), getSetting("hosthd2"), getSetting("hosthd3"), getSetting("hosthd4"), getSetting("hosthd5"), getSetting("hosthd6"), getSetting("hosthd7"), getSetting("hosthd8"), getSetting("hosthd9"), getSetting("hosthd10"), getSetting("hosthd11"), getSetting("hosthd12"), getSetting("hosthd13"), getSetting("hosthd14"), getSetting("hosthd15"), getSetting("hosthd16"), getSetting("hosthd17")]
+	    #hd_rank = ['Hugefiles', 'YIFY', 'Muchmovies', 'Billionuploads', 'GVideo', 'Sweflix', 'Videomega', 'Niter', 'Einthusan', 'VK', 'V-vids', 'Vidbull', 'Filecloud', 'Uploadrocket', 'Kingfiles']
+
+        import time
+        current_time = time.localtime()
+        hour = int(time.strftime("%H", current_time))
+        print 'hour:'
+        print hour
+        if hour > 18 and hour < 23:
+            hd_rank = ['VK']
+        else:
+            hd_rank = ['Hugefiles', 'YIFY', 'Billionuploads', 'GVideo', 'Sweflix', 'Videomega', 'Niter', 'Einthusan', 'VK', 'V-vids', 'Vidbull', 'Filecloud', 'Uploadrocket', 'Kingfiles']
 
         hd_rank = [i.lower() for i in hd_rank]
         hd_rank = uniqueList(hd_rank).list
