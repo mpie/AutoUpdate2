@@ -5606,7 +5606,8 @@ class resolver:
         global_sources = []
 
         #sourceDict = [('yify', 'true')]
-        sourceDict = [('icefilms', getSetting("icefilms")), ('primewire', getSetting("primewire")), ('movie25', getSetting("movie25")), ('iwatchonline', getSetting("iwatchonline")), ('movietube', getSetting("movietube")), ('moviezone', getSetting("moviezone")), ('zumvo', getSetting("zumvo")), ('view47', getSetting("view47")), ('g2g', getSetting("g2g")), ('muchmovies', getSetting("muchmovies")), ('sweflix', getSetting("sweflix")), ('movieshd', getSetting("movieshd")), ('onlinemovies', getSetting("onlinemovies")), ('yify', getSetting("yify")), ('vkbox', getSetting("vkbox")), ('moviestorm', getSetting("moviestorm")), ('merdb', getSetting("merdb")), ('wso', getSetting("wso")), ('twomovies', getSetting("twomovies")), ('einthusan', getSetting("einthusan")), ('myvideolinks', getSetting("myvideolinks")), ('noobroom', getSetting("noobroom")), ('furk', getSetting("furk"))]
+        #sourceDict = [('icefilms', getSetting("icefilms")), ('primewire', getSetting("primewire")), ('movie25', getSetting("movie25")), ('iwatchonline', getSetting("iwatchonline")), ('movietube', getSetting("movietube")), ('moviezone', getSetting("moviezone")), ('zumvo', getSetting("zumvo")), ('view47', getSetting("view47")), ('g2g', getSetting("g2g")), ('muchmovies', getSetting("muchmovies")), ('sweflix', getSetting("sweflix")), ('movieshd', getSetting("movieshd")), ('onlinemovies', getSetting("onlinemovies")), ('yify', getSetting("yify")), ('vkbox', getSetting("vkbox")), ('moviestorm', getSetting("moviestorm")), ('merdb', getSetting("merdb")), ('wso', getSetting("wso")), ('twomovies', getSetting("twomovies")), ('einthusan', getSetting("einthusan")), ('myvideolinks', getSetting("myvideolinks")), ('noobroom', getSetting("noobroom")), ('furk', getSetting("furk"))]
+        sourceDict = [('icefilms', 'true'), ('primewire', 'true'), ('movie25', 'true'), ('iwatchonline', 'true'), ('movietube', 'true'), ('moviezone', 'true'), ('zumvo', 'true'), ('view47', 'true'), ('g2g', 'true'), ('muchmovies', 'true'), ('sweflix', 'true'), ('movieshd', 'true'), ('onlinemovies', 'true'), ('yify', 'true'), ('vkbox', 'true'), ('moviestorm', 'true'), ('merdb', 'true'), ('wso', 'true'), ('twomovies', 'true'), ('einthusan', 'true'), ('myvideolinks', 'true')]
 
         threads = []
         sourceDict = [i[0] for i in sourceDict if i[1] == 'true']
@@ -5801,6 +5802,7 @@ class resolver:
             self.sources[i]['host'] = self.sources[i]['source']
             self.sources[i]['source'] = label.upper()
             count = count + 1
+        print self.sources
         return self.sources
 
     def sources_dialog(self):
