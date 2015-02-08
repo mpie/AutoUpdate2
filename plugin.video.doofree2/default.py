@@ -4602,9 +4602,20 @@ class thai:
                                     sd = channel + '/' + programId + '/' + date + '-' + programId + '.mp4'
                                     found = self.play_episode(url, channel, hd, sd, item)
             else:
+                # chMovie
                 hd = channel + '/' + programId + '/' + date + '1-' + programId + '.mp4'
                 sd = channel + '/' + programId + '/' + date + '-' + programId + '.mp4'
                 found = self.play_episode(url, channel, hd, sd, item)
+                if not found:
+                    channel = 'ch3'
+                    hd = channel + '/' + programId + '/' + date + '1-' + programId + '.mp4'
+                    sd = channel + '/' + programId + '/' + date + '-' + programId + '.mp4'
+                    found = self.play_episode(url, channel, hd, sd, item)
+                    if not found:
+                        channel = 'chthaipbs'
+                        hd = channel + '/' + programId + '/' + date + '1-' + programId + '.mp4'
+                        sd = channel + '/' + programId + '/' + date + '-' + programId + '.mp4'
+                        found = self.play_episode(url, channel, hd, sd, item)
 
     def livetv_list(self, url):
         self.list = self.parseJson(url)
