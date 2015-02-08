@@ -231,7 +231,6 @@ class main:
         dst_file = xbmc.translatePath('special://home/userdata/Thumbnails/' + match[2])
         if os.path.exists(dst_file):
             os.remove(dst_file)
-        dbcur.execute("DELETE FROM texture WHERE url = '%s'" % (logo))
 
     def CheckForAutoUpdate(self, force = False):
         GitHubRepo    = 'AutoUpdate2'
