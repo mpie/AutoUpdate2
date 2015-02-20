@@ -869,8 +869,8 @@ class index:
             t1 = int(re.sub('[^0-9]', '', str(match[3])))
             t2 = int(datetime.datetime.now().strftime("%Y%m%d%H%M"))
             update = abs(t2 - t1) >= int(timeout*60)
-            #if update == False:
-                #return response
+            if update == False:
+                return response
         except:
             pass
 
@@ -1266,8 +1266,8 @@ class index:
         xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=cacheToDisc)
         for i in range(0, 200):
             if xbmc.getCondVisibility('Container.Content(movies)'):
-                return index().container_view('movies', {'skin.confluence' : 515})
-            xbmc.sleep(100)
+                return index().container_view('movies', {'skin.confluence' : 500})
+            xbmc.sleep(50)
 
     def showList(self, showList):
         if showList == None or len(showList) == 0: return
@@ -1383,7 +1383,7 @@ class index:
         xbmcplugin.endOfDirectory(int(sys.argv[1]), cacheToDisc=True)
         for i in range(0, 200):
             if xbmc.getCondVisibility('Container.Content(tvshows)'):
-                return index().container_view('tvshows', {'skin.confluence' : 503})
+                return index().container_view('tvshows', {'skin.confluence' : 500})
             xbmc.sleep(100)
 
     def seasonList(self, seasonList):
@@ -2336,7 +2336,7 @@ class link:
         self.imdb_oscars = 'http://www.imdb.com/search/title?title_type=feature,tv_movie&groups=oscar_best_picture_winners&sort=year,desc&count=25&start=1'
         self.imdb_search = 'http://www.imdb.com/search/title?title_type=feature,short,tv_movie,tv_special,video&sort=moviemeter,asc&count=25&start=1&title=%s'
         self.imdb_tv_genres = 'http://www.imdb.com/search/title?title_type=tv_series,mini_series&sort=moviemeter,asc&count=25&start=1&genres=%s'
-        self.imdb_tv_popular = 'http://www.imdb.com/search/title?title_type=tv_series,mini_series&sort=moviemeter,asc&count=25&start=1'
+        self.imdb_tv_popular = 'http://www.imdb.com/search/title?title_type=tv_series,mini_series&sort=moviemeter,asc&count=50&start=1'
         self.imdb_tv_rating = 'http://www.imdb.com/search/title?title_type=tv_series,mini_series&num_votes=5000,&sort=user_rating,desc&count=25&start=1'
         self.imdb_tv_views = 'http://www.imdb.com/search/title?title_type=tv_series,mini_series&sort=num_votes,desc&count=25&start=1'
         self.imdb_tv_active = 'http://www.imdb.com/search/title?title_type=tv_series,mini_series&production_status=active&sort=moviemeter,asc&count=25&start=1'
@@ -5552,6 +5552,7 @@ class resolver:
                 season, episode = episodes().tvrage_redirect(title, year, imdb, tvdb, season, episode, show, date, genre)
                 self.sources = self.sources_tv(name, title, year, imdb, tvdb, date, season, episode, show, show_alt)
 
+            self.content = content
             self.sources = self.sources_filter()
             if self.sources == []: raise Exception()
 
@@ -5564,11 +5565,12 @@ class resolver:
                 url = self.sources_dialog()
             elif url == 'direct://':
                 url = self.sources_direct()
-            elif not autoplay == 'true':
+            elif not autoplay == 'true' or content == 'episode':
                 url = self.sources_dialog()
             else:
                 url = self.sources_direct()
-
+            print 'url-------------'
+            print url
             if url == None: raise Exception()
             if url == 'close://': return
 
@@ -5607,7 +5609,7 @@ class resolver:
 
         #sourceDict = [('yify', 'true')]
         #sourceDict = [('icefilms', getSetting("icefilms")), ('primewire', getSetting("primewire")), ('movie25', getSetting("movie25")), ('iwatchonline', getSetting("iwatchonline")), ('movietube', getSetting("movietube")), ('moviezone', getSetting("moviezone")), ('zumvo', getSetting("zumvo")), ('view47', getSetting("view47")), ('g2g', getSetting("g2g")), ('muchmovies', getSetting("muchmovies")), ('sweflix', getSetting("sweflix")), ('movieshd', getSetting("movieshd")), ('onlinemovies', getSetting("onlinemovies")), ('yify', getSetting("yify")), ('vkbox', getSetting("vkbox")), ('moviestorm', getSetting("moviestorm")), ('merdb', getSetting("merdb")), ('wso', getSetting("wso")), ('twomovies', getSetting("twomovies")), ('einthusan', getSetting("einthusan")), ('myvideolinks', getSetting("myvideolinks")), ('noobroom', getSetting("noobroom")), ('furk', getSetting("furk"))]
-        sourceDict = [('icefilms', 'true'), ('movie25', 'true'), ('iwatchonline', 'true'), ('yify', 'true'), ('vkbox', 'true'), ('einthusan', 'true')]
+        sourceDict = [('icefilms', 'true'), ('movie25', 'true'), ('movieshd', 'true'), ('iwatchonline', 'true'), ('yify', 'true'), ('vkbox', 'true'), ('einthusan', 'true')]
 
         threads = []
         sourceDict = [i[0] for i in sourceDict if i[1] == 'true']
@@ -5623,7 +5625,7 @@ class resolver:
         global global_sources
         global_sources = []
 
-        sourceDict = [('icefilms', 'true'), ('vkbox', 'true')]
+        sourceDict = [('icefilms', 'true'), ('primewire', 'true'), ('vkbox', 'true')]
         #sourceDict = [('icefilms', 'false'), ('primewire', 'true'), ('watchseries', 'true'), ('iwatchonline', 'true'), ('movietube', 'true'), ('ororo', 'true'), ('vkbox', 'false'), ('clickplay', 'true'), ('moviestorm', 'true'), ('merdb', 'true'), ('wso', 'true'), ('twomovies', 'true'), ('animeultima', 'true'), ('tvrelease', 'true'), ('directdl', 'true'), ('noobroom', 'true'), ('furk', 'true')]
         #sourceDict = [('icefilms', getSetting("icefilms_tv")), ('primewire', getSetting("primewire_tv")), ('watchseries', getSetting("watchseries_tv")), ('iwatchonline', getSetting("iwatchonline_tv")), ('movietube', getSetting("movietube_tv")), ('ororo', getSetting("ororo_tv")), ('vkbox', getSetting("vkbox_tv")), ('clickplay', getSetting("clickplay_tv")), ('moviestorm', getSetting("moviestorm_tv")), ('merdb', getSetting("merdb_tv")), ('wso', getSetting("wso_tv")), ('twomovies', getSetting("twomovies_tv")), ('animeultima', getSetting("animeultima_tv")), ('tvrelease', getSetting("tvrelease_tv")), ('directdl', getSetting("directdl_tv")), ('noobroom', getSetting("noobroom_tv")), ('furk', getSetting("furk_tv"))]
 
@@ -5654,9 +5656,9 @@ class resolver:
             t1 = int(re.sub('[^0-9]', '', str(match[5])))
             t2 = int(datetime.datetime.now().strftime("%Y%m%d%H%M"))
             update = abs(t2 - t1) > 60
-            #if update == False:
-                #sources = json.loads(match[4])
-                #return global_sources.extend(sources)
+            if update == False:
+                sources = json.loads(match[4])
+                return global_sources.extend(sources)
         except:
             pass
 
@@ -5705,9 +5707,9 @@ class resolver:
             t1 = int(re.sub('[^0-9]', '', str(match[5])))
             t2 = int(datetime.datetime.now().strftime("%Y%m%d%H%M"))
             update = abs(t2 - t1) > 60
-            #if update == False:
-                #sources = json.loads(match[4])
-                #return global_sources.extend(sources)
+            if update == False:
+                sources = json.loads(match[4])
+                return global_sources.extend(sources)
         except:
             pass
 
@@ -5772,18 +5774,15 @@ class resolver:
         #hd_rank += [getSetting("hosthd1"), getSetting("hosthd2"), getSetting("hosthd3"), getSetting("hosthd4"), getSetting("hosthd5"), getSetting("hosthd6"), getSetting("hosthd7"), getSetting("hosthd8"), getSetting("hosthd9"), getSetting("hosthd10"), getSetting("hosthd11"), getSetting("hosthd12"), getSetting("hosthd13"), getSetting("hosthd14"), getSetting("hosthd15"), getSetting("hosthd16"), getSetting("hosthd17")]
 	    #hd_rank = ['Hugefiles', 'YIFY', 'Muchmovies', 'Billionuploads', 'GVideo', 'Sweflix', 'Videomega', 'Niter', 'Einthusan', 'VK', 'V-vids', 'Vidbull', 'Filecloud', 'Uploadrocket', 'Kingfiles']
 
-        import time
-        current_time = time.localtime()
-        hour = int(time.strftime("%H", current_time))
-        print 'hour:'
-        print hour
-        if hour > 18 and hour < 23:
-            hd_rank = ['VK']
-        else:
-            hd_rank = ['Hugefiles', 'YIFY', 'Billionuploads', 'GVideo', 'Sweflix', 'Videomega', 'Niter', 'Einthusan', 'VK', 'V-vids', 'Vidbull', 'Filecloud', 'Uploadrocket', 'Kingfiles']
+        hd_rank = ['YIFY', 'GVideo', 'Movreel', 'VK', 'Sweflix', 'Videomega', 'Niter', 'Einthusan', 'V-vids', 'Vidbull', 'Filecloud', 'Uploadrocket', 'Kingfiles']
 
         hd_rank = [i.lower() for i in hd_rank]
         hd_rank = uniqueList(hd_rank).list
+
+        sd_rank = ['Mightyupload', 'Billionuploads', '180upload', 'Ororo', 'Animeultima', 'Streamin', 'Grifthost', 'iShared', 'Cloudyvideos', 'Mrfile', 'VK', 'Movshare', 'Vidbull', 'Vodlocker', 'Played', 'Gorillavid', 'Divxstage']
+
+        sd_rank = [i.lower() for i in sd_rank]
+        sd_rank = uniqueList(sd_rank).list
 
         for i in range(len(self.sources)): self.sources[i]['source'] = self.sources[i]['source'].lower()
         self.sources = sorted(self.sources, key=itemgetter('source'))
@@ -5791,25 +5790,28 @@ class resolver:
         filter = []
         for host in hd_rank: filter += [i for i in self.sources if i['quality'] == '1080p' and i['source'].lower() == host.lower()]
         for host in hd_rank: filter += [i for i in self.sources if i['quality'] == 'HD' and i['source'].lower() == host.lower()]
+        if self.content == 'episode':
+            for host in sd_rank: filter += [i for i in self.sources if not i['quality'] in ['1080p', 'HD'] and i['source'].lower() == host.lower()]
         self.sources = filter
 
         filter = []
         filter += [i for i in self.sources if i['quality'] == '1080p']
         filter += [i for i in self.sources if i['quality'] == 'HD']
+        if self.content == 'episode':
+            filter += [i for i in self.sources if i['quality'] == 'SD']
         self.sources = filter
 
         if getSetting("play_hd") == 'false':
             self.sources = [i for i in self.sources if not i['quality'] in ['1080p', 'HD']]
-
         count = 1
         for i in range(len(self.sources)):
             source = self.sources[i]['source'].lower()
 
-            label = '%02d | [B]%s[/B] | ' % (count, self.sources[i]['provider'])
+            label = '%02d | [B]%s[/B] | ' % (count, self.sources[i]['source'])
 
             try: label += '%s' % (self.sources[i]['info'])
-            except: label += '%s | %s' % (self.sources[i]['source'], self.sources[i]['quality'])
-
+            except: label += '%s' % (self.sources[i]['quality'])
+            
             self.sources[i]['host'] = self.sources[i]['source']
             self.sources[i]['source'] = label.upper()
             count = count + 1
@@ -5832,25 +5834,27 @@ class resolver:
             self.selectedSource = self.sources[select]['source']
             return url
         except:
+            print 'could not return source'
             return
 
     def sources_direct(self):
-        hd_access = ['movreel', 'gvideo', 'hugefiles', '180upload', 'niter', 'yify', 'einthusan', 'vk']
+        hd_access = ['yify', 'gvideo', 'vk', 'movreel', 'hugefiles', '180upload', 'niter', 'einthusan']
         blocks = ['furk']
 
         self.sources = [i for i in self.sources if not i['host'] in blocks]
-
         #self.sources = [i for i in self.sources if not (i['quality'] in ['1080p', 'HD'] and not i['host'] in hd_access)]
-        self.sources = [i for i in self.sources if not (i['quality'] in ['1080p', 'HD'] and not i['host'] in self.hosthdDict)]
 
+        #print self.sources
         if getSetting("autoplay_hd") == 'false':
             self.sources = [i for i in self.sources if not i['quality'] in ['1080p', 'HD']]
 
         u = None
-
         for i in self.sources:
             try:
                 url = self.sources_resolve(i['url'], i['provider'])
+                print i['provider']
+                print url
+		print i['source']
                 xbmc.sleep(100)
                 if url == None: raise Exception()
                 if u == None: u = url
@@ -5879,7 +5883,7 @@ class resolver:
         'bitshare',
         'uploadable',
         'movreel',
-        'billionuploads',
+        #'billionuploads',
         'v-vids',
         'vidbull',
         'hugefiles',
@@ -5891,7 +5895,54 @@ class resolver:
         ]
 
     def sources_dict(self):
-        self.hostDict = []
+        self.hostDict = [
+        '180upload',
+        'allmyvideos',
+        'bestreams',
+        #'billionuploads',
+        'cloudyvideos',
+        'cloudzilla',
+        'daclips',
+        #'divxstage',
+        'fastvideo',
+        #'filecloud',
+        'filehoot',
+        'filenuke',
+        'gorillavid',
+        'grifthost',
+        #'hostingbulk',
+        #'hugefiles',
+        'ipithos',
+        'ishared',
+        #'kingfiles',
+        'mightyupload',
+        'mooshare',
+        'movdivx',
+        'movpod',
+        'movreel',
+        'movshare',
+        #'movzap',
+        'mrfile',
+        'nosvideo',
+        'novamov',
+        'nowvideo',
+        'played',
+        'primeshare',
+        'promptfile',
+        'sharerepo',
+        'sharesix',
+        'stagevu',
+        'streamcloud',
+        'streamin',
+        'thefile',
+        'thevideo',
+        'uploadc',
+        #'uploadrocket',
+        'v-vids',
+        'vidbull',
+        #'videomega',
+        'videoweed'
+        ]
 
 
 main()
